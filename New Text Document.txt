@@ -1,0 +1,87 @@
+
+
+        private ClaimDetails DeserializeClaimDetailsResponse(string content)
+        {
+            var response = new ClaimDetails();
+            response.IsElementary = false;
+
+            var document = XDocument.Parse(content);
+
+            XNamespace xnamespace = http://schemas.xmlsoap.org/soap/envelope/;
+
+            var bodyElement = document
+                .Element(xnamespace + "Envelope")
+                .Element(xnamespace + "Body");
+
+            xnamespace = http://www.tvknsdata2.org/tvknsdata2/;
+
+            var outputElement = bodyElement
+                .Element(xnamespace + "tvknsdata2MessageResponse")
+                .Element(xnamespace + "TVYNSDATA2-PARM")
+                .Element(xnamespace + "OUTPUT-PARM");
+
+            var statusElement = outputElement
+                .Element(xnamespace + "O-STTS");
+
+            response.ReturnCode = StarNet.XML.Utils.GetValue<int>(statusElement, xnamespace + "O-RETURN-CODE");
+
+            var messageCode = StarNet.XML.Utils.GetValue<string>(statusElement, xnamespace + "O-MESSAGE-CODE");
+            var returnMessage = StarNet.XML.Utils.GetValue<string>(statusElement, xnamespace + "O-RETURN-MESSAGE");
+            response.ReturnMessage = $"{messageCode} - {returnMessage}";
+
+            if (response.ReturnCode != Common.Constants.LegacyServiceReturnCodes.OK)
+            {
+                return response;
+            }
+
+            var responseElement = outputElement
+                .Element(xnamespace + "O-RESPONSEOUTPUT");
+
+            response.UserName = StarNet.XML.Utils.GetValue<string>(responseElement, xnamespace + "O-USERNAME");
+            response.UserEmail = StarNet.XML.Utils.GetValue<string>(responseElement, xnamespace + "O-USEREMAIL");
+            response.SectionId = StarNet.XML.Utils.GetValue<string>(responseElement, xnamespace + "O-SECTIONID");
+            response.ClaimType = StarNet.XML.Utils.GetValue<string>(responseElement, xnamespace + "O-CLAIMTYPE");
+            response.ClaimTypeName = StarNet.XML.Utils.GetValue<string>(responseElement, xnamespace + "O-CLAIMTYPENAME");
+
+            var occurrenceDate = StarNet.XML.Utils.GetValue<string>(responseElement, xnamespace + "O-OCCURRENCEDATE");
+
+            try
+            {
+                response.OccurrenceDate = DateTime.ParseExact(
+                    occurrenceDate,
+                    "yyyy-MM-dd",
+                    CultureInfo.InvariantCulture);
+            }
+            catch { }
+
+            response.EventCause = StarNet.XML.Utils.GetValue<string>(responseElement, xnamespace + "O-EVENTCAUSE");
+            response.Diagnosis = StarNet.XML.Utils.GetValue<string>(responseElement, xnamespace + "O-DIAGNOSIS")?.Trim();
+            response.FullName = StarNet.XML.Utils.GetValue<string>(responseElement, xnamespace + "O-FULLNAME");
+            response.ClientId = StarNet.XML.Utils.GetValue<string>(responseElement, xnamespace + "O-CLIENTID");
+
+            var birthDate = StarNet.XML.Utils.GetValue<string>(responseElement, xnamespace + "O-BIRTHDATE");
+
+            try
+            {
+                response.BirthDate = DateTime.ParseExact(
+                    birthDate,
+                    "yyyy-MM-dd",
+                    CultureInfo.InvariantCulture);
+            }
+            catch { }
+
+            response.Gender = StarNet.XML.Utils.GetValue<string>(responseElement, xnamespace + "O-GENDER");
+            response.City = StarNet.XML.Utils.GetValue<string>(responseElement, xnamespace + "O-CITY");
+            response.ZipCode = StarNet.XML.Utils.GetValue<decimal?>(responseElement, xnamespace + "O-ZIPCODE");
+            response.Street = StarNet.XML.Utils.GetValue<string>(responseElement, xnamespace + "O-STREET");
+            response.HouseNumber = StarNet.XML.Utils.GetValue<string>(responseElement, xnamespace + "O-HOUSENUMBER");
+            response.Phone = StarNet.XML.Utils.GetValue<string>(responseElement, xnamespace + "O-PHONE");
+            response.Mobile = StarNet.XML.Utils.GetValue<string>(responseElement, xnamespace + "O-MOBILE");
+            response.Email = StarNet.XML.Utils.GetValue<string>(responseElement, xnamespace + "O-EMAIL");
+            response.ContactFullName = StarNet.XML.Utils.GetValue<string>(responseElement, xnamespace + "O-CONTACTFULLNAME");
+            response.ContactType = StarNet.XML.Utils.GetValue<string>(responseElement, xnamespace + "O-CONTACTTYPE");
+            response.ContactPhone = StarNet.XML.Utils.GetValue<string>(responseElement, xnamespace + "O-CONTACTPHONE");
+            response.ContactMobile = StarNet.XML.Utils.GetValue<string>(responseElement, xnamespace + "O-CONTACTMOBILE");
+
+            return response;
+        }
