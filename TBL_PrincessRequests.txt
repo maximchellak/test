@@ -1,0 +1,21 @@
+  USE [WINS]
+GO
+
+/****** Object:  Table [wins3].[TBL_PrincessRequests]    Script Date: 05/01/2026 13:57:08 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [wins3].[TBL_PrincessRequests](
+	[RequestID] [nvarchar](50) NULL,
+	[ClaimNumber] [nvarchar](50) NULL,
+	[DocId] [nvarchar](50) NULL,
+	[DateCreated] [datetime] NULL,
+	[DocDate] [datetime] NULL,
+	[FileSize] [nvarchar](50) NULL
+) ON [PRIMARY]
+
+GO
+
