@@ -1,0 +1,55 @@
+        public IStarNetService StarNetService
+        {
+            get
+            {
+                if (_starnetClient == null)
+                {
+                    var client = new StarNetServiceClient();
+                    StarNet.WCF.CustomHeader.Core.AddCustomBehavior(client.ChannelFactory);
+
+                    _starnetClient = client;
+
+                    //_starnetClient = new StarNetServiceClient();
+                }
+                return _starnetClient;
+            }
+        }
+
+
+
+
+
+rgO5H2/I7x48I81kuiWf2/BZkGSFa6wDnYqw45YTQMoOWRrhRscXOswQX3r8WCK/d4ZJAwIhdw6FYfNKePc61oR4fa+hYN8T1WuKX3xIdeJs/4XKs83txVznWdTtqDUNmzyjzSyT+0PBeeh34R2N8Q==
+
+
+
+
+    [CustomAuthorizationBehavior]
+    public partial class StarNetService : IStarNetService
+    {
+
+
+
+
+
+
+ public partial class AutomaticActivity : BaseDbAccessService, IAutomaticActivity
+    {
+        public AutomaticActivity()
+            : base()
+        {
+        }
+
+
+
+
+                using (var client = Core.GetAutomaticActivityClient())
+                {
+                    client.RunAction(actionName, args);
+                }
+
+
+
+
+
+
