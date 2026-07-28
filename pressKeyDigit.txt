@@ -1,0 +1,112 @@
+public void SetPhoneTextOnlyDigits(object objSender, KeyEventArgs objArgs)
+{
+    if (objArgs.KeyCode == Keys.Back)
+    {
+        return;
+    }
+
+    StarNet.Controls.UI.TextBox tbX = objSender as StarNet.Controls.UI.TextBox;
+
+    if (tbX.SelectionLength > 0
+                && tbX.SelectionLength == tbX.Text.Length)
+    {
+        tbX.Text = string.Empty;
+    }
+
+    var text = tbX.Text;
+    var newText = string.Empty;
+
+    if (objArgs.KeyCode == Keys.Delete)
+    {
+        tbX.Text = string.Empty;
+        tbX.Update();
+
+        tbX.SelectionStart = 0;
+        tbX.SelectionLength = 0;
+
+        return;
+    }
+
+    foreach (var myChar in text)
+    {
+        if (char.IsDigit(myChar))
+        {
+            newText += myChar;
+        }
+    }
+
+    char numPadKeyPressed = '\n';
+    var isDigit = false;
+
+    if (objArgs.KeyCode >= Keys.NumPad0 && objArgs.KeyCode <= Keys.NumPad9)
+    {
+        switch (objArgs.KeyCode)
+        {
+
+            case Keys.NumPad0:
+                numPadKeyPressed = '0';
+                isDigit = true;
+                break;
+
+            case Keys.NumPad1:
+                numPadKeyPressed = '1';
+                isDigit = true;
+                break;
+            case Keys.NumPad2:
+                numPadKeyPressed = '2';
+                isDigit = true;
+                break;
+            case Keys.NumPad3:
+                numPadKeyPressed = '3';
+                isDigit = true;
+                break;
+            case Keys.NumPad4:
+                numPadKeyPressed = '4';
+                isDigit = true;
+                break;
+            case Keys.NumPad5:
+                numPadKeyPressed = '5';
+                isDigit = true;
+                break;
+            case Keys.NumPad6:
+                numPadKeyPressed = '6';
+                isDigit = true;
+                break;
+            case Keys.NumPad7:
+                numPadKeyPressed = '7';
+                isDigit = true;
+                break;
+            case Keys.NumPad8:
+                numPadKeyPressed = '8';
+                isDigit = true;
+                break;
+            case Keys.NumPad9:
+                numPadKeyPressed = '9';
+                isDigit = true;
+                break;
+        }
+    }
+
+    if (objArgs.KeyValue >= 48 && objArgs.KeyValue <= 57)
+    {
+        numPadKeyPressed = (char)(objArgs.KeyValue);
+        isDigit = true;
+    }
+
+    if (isDigit)
+    {
+        newText += numPadKeyPressed;
+    }
+
+    tbX.Focus();
+    //txtInsuredPhone1.SelectionStart = newText.Length - 1;
+    //txtInsuredPhone1.SelectionLength = 0;
+    tbX.Select(newText.Length, 0);
+    tbX.Text = newText;
+    tbX.Update();
+}
+
+private void txtInsuredFax_KeyDown(object objSender, KeyEventArgs objArgs)
+{
+    SetPhoneTextOnlyDigits(objSender, objArgs);
+}
