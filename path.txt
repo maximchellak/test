@@ -1,0 +1,46 @@
+
+        /// <summary>
+        /// Sanitizes a file name by removing or replacing invalid characters.
+        /// </summary>
+        public static string SanitizeFileName(string fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName))
+            {
+                throw new ArgumentException("File name cannot be null or empty.", nameof(fileName));
+            }
+
+            // Get invalid file name characters
+            var invalidChars = new Regex(string.Format("[{0}]", Regex.Escape(new string(Path.GetInvalidFileNameChars()))));
+
+            // Replace invalid characters with underscore
+            var sanitized = invalidChars.Replace(fileName, "_");
+
+            // Remove leading/trailing dots and spaces (invalid on Windows)
+            sanitized = sanitized.TrimEnd(new[] { '.', ' ' });
+
+            // Ensure the result is not empty
+            if (string.IsNullOrWhiteSpace(sanitized))
+            {
+                sanitized = "file";
+            }
+
+            return sanitized;
+        }
+
+        /// <summary>
+        /// Sanitizes a file path by sanitizing each component.
+        /// </summary>
+        public static string SanitizePath(string filePath)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+            {
+                throw new ArgumentException("File path cannot be null or empty.", nameof(filePath));
+            }
+
+            var dir = Path.GetDirectoryName(filePath);
+            var fileName = Path.GetFileName(filePath);
+
+            var sanitizedFileName = SanitizeFileName(fileName);
+
+            return string.IsNullOrEmpty(dir) ? sanitizedFileName : Path.Combine(dir, sanitizedFileName);
+        }
