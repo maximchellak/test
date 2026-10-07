@@ -1,6 +1,0 @@
-        protected void Application_BeginRequest(object sender, EventArgs e)
-        {
-            ValidateRequest(sender);
-
-            UrlRemapUtil.ReplaceJQueryToNewVersionInUrlPath(HttpContext.Current);
-        }
